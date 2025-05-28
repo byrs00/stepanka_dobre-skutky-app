@@ -1,37 +1,32 @@
-const BIN_ID = "6836c98a8a456b7966a657de";
-const API_KEY = "$2a$10$cEC9UMYDjgPs5bqVeFHXqOU8EaKOGZAnvhz6xxmJ2LX4iGdeAsIrS";
+const apiKey = '$2a$10$cEC9UMYDjgPs5bqVeFHXqOU8EaKOGZAnvhz6xxmJ2LX4iGdeAsIrS';
+const binId = '6836c98a8a456b7966a657de';
 
 async function fetchGoodDeeds() {
-  const url = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
       headers: {
-        'X-Master-Key': API_KEY,
-      },
+        'X-Master-Key': apiKey
+      }
     });
+
     if (!response.ok) {
-      console.error("Chyba při načítání dat:", response.statusText);
-      return [];
+      throw new Error('Nepodařilo se načíst data.');
     }
+
     const data = await response.json();
-    return data.record.goodDeeds || [];
+    const deeds = data.record.goodDeeds; // předpokládám, že seznam je v tomto klíči
+
+    // Vyber náhodný skutek
+    const randomIndex = Math.floor(Math.random() * deeds.length);
+    const randomDeed = deeds[randomIndex];
+
+    // Vypiš do HTML
+    const container = document.getElementById('goodDeedsContainer');
+    container.textContent = randomDeed;
+
   } catch (error) {
-    console.error("Chyba při fetch:", error);
-    return [];
+    console.error('Chyba:', error);
   }
 }
 
-function displayGoodDeeds(deeds) {
-  const listEl = document.getElementById('good-deeds-list');
-  listEl.innerHTML = "";
-  deeds.forEach(deed => {
-    const li = document.createElement('li');
-    li.textContent = deed;
-    listEl.appendChild(li);
-  });
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const deeds = await fetchGoodDeeds();
-  displayGoodDeeds(deeds);
-});
+window.onload = fetchGoodDeeds;
