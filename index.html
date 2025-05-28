@@ -6,10 +6,34 @@
 </head>
 <body>
   <h1>Drobné dobré skutky</h1>
-  <p id="good-deeds-list"></p>
-  <button id="new-deed-btn">Zobrazit nový skutek</button>
-  <button id="complete-deed-btn">Splnil(a) jsem skutek</button>
+  <p id="goodDeedsContainer">Načítám skutek...</p>
 
-  <script src="script.js"></script>
+  <script>
+    const binId = "6836c98a8a456b7966a657de";
+    const apiKey = "$2a$10$cEC9UMYDjgPs5bqVeFHXqOU8EaKOGZAnvhz6xxmJ2LX4iGdeAsIrS";
+    const url = `https://api.jsonbin.io/v3/b/${binId}/latest`;
+
+    fetch(url, {
+      headers: {
+        "X-Master-Key": apiKey
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        // V JSON máš pole goodDeeds, tak tady to opravím
+        const deeds = data.record.goodDeeds || [];
+        if (deeds.length > 0) {
+          const randomIndex = Math.floor(Math.random() * deeds.length);
+          const randomDeed = deeds[randomIndex];
+          document.getElementById("goodDeedsContainer").textContent = randomDeed;
+        } else {
+          document.getElementById("goodDeedsContainer").textContent = "Žádné skutky nenalezeny.";
+        }
+      })
+      .catch(error => {
+        console.error("Chyba při načítání dat:", error);
+        document.getElementById("goodDeedsContainer").textContent = "Nepodařilo se načíst data.";
+      });
+  </script>
 </body>
 </html>
