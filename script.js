@@ -1,24 +1,34 @@
-const form = document.getElementById('skutekForm');
-const input = document.getElementById('skutekInput');
-const list = document.getElementById('skutekList');
+const binId = "6836c98a8a456b7966a657de";
+const apiKey = "$2a$10$cEC9UMYDjgPs5bqVeFHXqOU8EaKOGZAnvhz6xxmJ2LX4iGdeAsIrS";
+const apiUrl = `https://api.jsonbin.io/v3/b/${binId}`;
 
-// Načti uložené skutky z localStorage při načtení stránky
-let skutky = JSON.parse(localStorage.getItem('skutky')) || [];
-skutky.forEach(skutek => addSkutekToList(skutek));
-
-form.addEventListener('submit', function(event) {
-  event.preventDefault();
-  const newSkutek = input.value.trim();
-  if(newSkutek) {
-    skutky.push(newSkutek);
-    localStorage.setItem('skutky', JSON.stringify(skutky));
-    addSkutekToList(newSkutek);
-    input.value = '';
-  }
-});
-
-function addSkutekToList(skutek) {
-  const li = document.createElement('li');
-  li.textContent = skutek;
-  list.appendChild(li);
+async function getSkutky() {
+  const response = await fetch(apiUrl + "/latest", {
+    headers: {
+      "X-Master-Key": apiKey
+    }
+  });
+  const data = await response.json();
+  return data.record.skutky;
 }
+
+async function addSkutek(novySkutek) {
+  const skutky = await getSkutky();
+  skutky.push(novySkutek);
+
+  const response = await fetch(apiUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Master-Key": apiKey,
+      "X-Bin-Versioning": "false"
+    },
+    body: JSON.stringify({ skutky })
+  });
+  return await response.json();
+}
+
+// Příklad přidání skutku:
+addSkutek("Usmál jsem se na cizího člověka dnes ráno.")
+  .then(data => console.log("Uloženo:", data))
+  .catch(err => console.error("Chyba:", err));
