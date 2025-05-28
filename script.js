@@ -1,34 +1,39 @@
-const binId = "6836c98a8a456b7966a657de";
-const apiKey = "$2a$10$cEC9UMYDjgPs5bqVeFHXqOU8EaKOGZAnvhz6xxmJ2LX4iGdeAsIrS";
-const apiUrl = `https://api.jsonbin.io/v3/b/${binId}`;
+// Seznam dobrých skutků
+const dobreSkutky = [
+  "Pomoci sousedovi s nákupem",
+  "Napsat někomu povzbudivý vzkaz",
+  "Pochválit kolegu v práci",
+  "Uklidit odpadky v parku",
+  "Darovat oblečení potřebným",
+  "Poslat děkovný e-mail učiteli nebo trenérovi",
+  "Připravit snídani rodině",
+  "Udělat radost kamarádovi malým dárkem",
+  "Poděkovat řidiči autobusu",
+  "Usmát se na cizího člověka",
+  "Pomoct někomu nést těžké věci",
+  "Sdílet zajímavý článek o pozitivních zprávách",
+  "Vysadit květinu nebo strom",
+  "Napsat děkovný dopis rodičům",
+  "Věnovat čas poslouchání přítele",
+  "Darovat krev",
+  "Pomoct při dobrovolnické akci",
+  "Zaplatit kávu někomu v kavárně",
+  "Uklidit svůj pracovní prostor a nabídnout pomoc kolegům",
+  "Naučit někoho novou dovednost"
+];
 
-async function getSkutky() {
-  const response = await fetch(apiUrl + "/latest", {
-    headers: {
-      "X-Master-Key": apiKey
-    }
+// Funkce pro zobrazení seznamu skutků
+function zobrazSkutky() {
+  const container = document.getElementById('seznamSkutku');
+  container.innerHTML = ''; // vyčistit obsah
+  dobreSkutky.forEach((skutek, index) => {
+    const p = document.createElement('p');
+    p.textContent = `${index + 1}. ${skutek}`;
+    container.appendChild(p);
   });
-  const data = await response.json();
-  return data.record.skutky;
 }
 
-async function addSkutek(novySkutek) {
-  const skutky = await getSkutky();
-  skutky.push(novySkutek);
-
-  const response = await fetch(apiUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Master-Key": apiKey,
-      "X-Bin-Versioning": "false"
-    },
-    body: JSON.stringify({ skutky })
-  });
-  return await response.json();
-}
-
-// Příklad přidání skutku:
-addSkutek("Usmál jsem se na cizího člověka dnes ráno.")
-  .then(data => console.log("Uloženo:", data))
-  .catch(err => console.error("Chyba:", err));
+// Spustit po načtení stránky
+window.onload = function() {
+  zobrazSkutky();
+};
