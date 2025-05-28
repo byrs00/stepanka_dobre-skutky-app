@@ -18,12 +18,8 @@ fetch(url, {
     document.getElementById("goodDeedsContainer").textContent = "Nepodařilo se načíst data.";
   });
 
-document.getElementById("generateButton").addEventListener("click", () => {
-  if (deeds.length > 0) {
-    const randomIndex = Math.floor(Math.random() * deeds.length);
-    const randomDeed = deeds[randomIndex];
-    document.getElementById("goodDeedsContainer").textContent = randomDeed;
-  } else {
-    document.getElementById("goodDeedsContainer").textContent = "Skutky nejsou dostupné.";
-  }
-});
+document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById("generateButton");
+  const container = document.getElementById("goodDeedsContainer");
+
+  button.addEventList
