@@ -22,4 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("generateButton");
   const container = document.getElementById("goodDeedsContainer");
 
-  button.addEventList
+  button.addEventListener("click", () => {
+    if (deeds.length > 0) {
+      const randomIndex = Math.floor(Math.random() * deeds.length);
+      container.textContent = deeds[randomIndex];
+    } else {
+      container.textContent = "Skutky nejsou dostupné.";
+    }
+  });
+});
